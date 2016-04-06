@@ -439,11 +439,11 @@ if __name__ == '__main__':
     # Tip from http://stackoverflow.com/questions/14737531/how-to-i-delete-all-flask-sessions,
     # setting a fresh key wipes all existing sessions when the server is restarted.
     # Handles problems like "phantom" accounts still being logged in after a DB wipe.
-    app.secret_key = os.urandom(32)
+    #app.secret_key = os.urandom(32)
 
     # Use this static key instead when debugging, to prevent having to log back in
     # frequently:
-    #app.secret_key = "not_so_secret"
+    app.secret_key = "not_so_secret"
 
     app.config["SESSION_TYPE"] = "filesystem"
     print "Starting catalogifier web service; press ctrl-c to exit."
