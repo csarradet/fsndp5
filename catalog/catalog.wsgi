@@ -70,8 +70,9 @@ def download_static_file(filename):
 @app.route('/')
 def dashboard():
     """ Serves the splash page for the application. """
-    recent_items = dal.get_recent_items(5)
-    return render("dashboard.html", recent_items=recent_items)
+    # recent_items = dal.get_recent_items(5)
+    # return render("dashboard.html", recent_items=recent_items)
+    return flask.render_template("helloworld.html")
 
 
 
