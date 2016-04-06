@@ -29,7 +29,8 @@ from flask import (
     )
 app = Flask(__name__)
 CLIENT_ID = json.loads(
-    open("./client_secrets.json", "r").read())["web"]["client_id"]
+    open("/var/www/html/fsndp5/catalog/client_secrets.json", "r").read())["web"]["client_id"]
+    #open("client_secrets.json", "r").read())["web"]["client_id"]
 from werkzeug import secure_filename
 
 # Project-specific includes
