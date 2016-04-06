@@ -1,0 +1,368 @@
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{% block title %}Catalogifier{% endblock %}</title>
+
+    <!-- Bootstrap includes -->
+    <!-- Hosted JQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <!-- Customized Bootstrap css with United theme -->
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Compiled and minified Bootstrap JS components -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Used to make our "gearbox" icons look a little prettier -->
+    <link href="/static/css/link-unstyled.css" rel="stylesheet" />
+
+
+    <script>
+    function set_current_cat(cat_name){
+        // Updates all flyout modals to show the provided cat_name when opened
+        $('#item_create_parent').val(cat_name);
+        $('#item_delete_parent').val(cat_name);
+        $('#item_update_old_parent').val(cat_name);
+        $('#cat_delete_name').val(cat_name);
+        $('#cat_update_old_name').val(cat_name);
+    }
+
+    function set_cat_and_item(cat_name, item_name){
+        // Updates all flyout modals to show the provided cat_name and item_name
+        set_current_cat(cat_name);
+        $('#item_delete_name').val(item_name);
+        $('#item_update_old_name').val(item_name);
+    }
+    </script>
+
+    {% block head %}{% endblock %}
+</head>
+<body>
+    <!-- bootstrap flyout modal for creating categories -->
+    <!-- (all modals use code from http://getbootstrap.com/javascript/#modals) -->
+    <div class="modal fade" id="cat_create_modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Create New Category</h4>
+                </div>
+                <div class="modal-body">
+                    <form method="POST" action="/catalog/create-cat/">
+                        <input type="hidden" name="state" value="{{ state }}"></input>
+
+                        <div class="form-group">
+                            <label for="cat_create_name">Name:</label>
+                            <input class="form-control" type="text" id="cat_create_name" name="cat_create_name" required></input>
+                        </div>
+
+                        <input type="submit" value="Confirm" class="btn btn-primary"/>
+                    </form>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+    <!-- bootstrap flyout modal for deleting categories -->
+    <div class="modal fade" id="cat_delete_modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Delete Category</h4>
+                </div>
+                <div class="modal-body">
+                    <form method="POST" action="/catalog/delete-cat/">
+                        <input type="hidden" name="state" value="{{ state }}"></input>
+                        <h5 class="text-primary">Are you sure you want to delete the following category?</h5><hr />
+
+                        <div class="form-group">
+                            <label for="cat_delete_name">Name:</label>
+                            <input class="form-control" type="text" id="cat_delete_name" name="cat_delete_name" readonly></input>
+                        </div>
+
+                        <input type="submit" value="Confirm" class="btn btn-primary" />
+                    </form>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+    <!-- bootstrap flyout modal for updating categories -->
+    <div class="modal fade" id="cat_update_modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Update Category</h4>
+                </div>
+                <div class="modal-body">
+                    <form method="POST" action="/catalog/update-cat/">
+                        <input type="hidden" name="state" value="{{ state }}"></input>
+                        <input type="hidden" id="cat_update_old_name" name="cat_update_old_name"></input>
+
+                        <div class="form-group">
+                            <label for="cat_update_new_name">New name:</label>
+                            <input class="form-control" type="text" id="cat_update_new_name" name="cat_update_new_name" required></input>
+                        </div>
+
+                        <input type="submit" value="Confirm" class="btn btn-primary"/>
+                    </form>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+
+    <!-- bootstrap flyout modal for creating items -->
+    <div class="modal fade" id="item_create_modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Create New Item</h4>
+                </div>
+                <div class="modal-body">
+                    <form method="POST" action="/catalog/create-item/" enctype="multipart/form-data">
+                        <input type="hidden" name="state" value="{{ state }}"></input>
+
+                        <div class="form-group">
+                            <label for="item_create_name">Name:</label>
+                            <input class="form-control" type="text" id="item_create_name" name="item_create_name" required></input>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="item_create_description">Description:</label>
+                            <input class="form-control" type="text" id="item_create_description" name="item_create_description" required></input>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="item_create_parent">Category:</label>
+                            <select class="form-control" name="item_create_parent" id="item_create_parent">
+                                {% for cat in items_by_cat %}
+                                <option value="{{ cat[0].name }}">{{ cat[0].name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="item_create_pic">Picture (.jpg only):</label>
+                            <input type="file" name="item_create_pic" accept=".jpg"
+                                class="button btn-default form-control" required></input>
+                        </div>
+
+                        <input type="submit" value="Confirm" class="btn btn-primary" />
+                    </form>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+    <!-- bootstrap flyout modal for deleting items -->
+    <div class="modal fade" id="item_delete_modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Delete Item</h4>
+                </div>
+                <div class="modal-body">
+                    <form method="POST" action="/catalog/delete-item/">
+                        <input type="hidden" name="state" value="{{ state }}"></input>
+                        <h5 class="text-primary">Are you sure you want to delete the following item?</h5><hr />
+
+                        <div class="form-group">
+                            <label for="item_delete_name">Name:</label>
+                            <input class="form-control" type="text" id="item_delete_name" name="item_delete_name" readonly></input>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="item_delete_parent">Category:</label>
+                            <input class="form-control" type="text" id="item_delete_parent" name="item_delete_parent" readonly></input>
+                        </div>
+
+                        <input type="submit" value="Confirm" class="btn btn-primary" />
+                    </form>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+    <!-- bootstrap flyout modal for updating items -->
+    <div class="modal fade" id="item_update_modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Update Item</h4>
+                </div>
+                <div class="modal-body">
+                    <form method="POST" action="/catalog/update-item/" enctype="multipart/form-data">
+                        <h5 class="text-primary">All fields are optional.  Leave them blank to keep any existing values.</h5><hr />
+                        <input type="hidden" name="state" value="{{ state }}"></input>
+                        <input type="hidden" id="item_update_old_name" name="item_update_old_name"></input>
+                        <input type="hidden" id="item_update_old_parent" name="item_update_old_parent"></input>
+
+                        <div class="form-group">
+                            <label for="item_update_new_name">New name:</label>
+                            <input class="form-control" type="text" id="item_update_new_name" name="item_update_new_name"></input>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="item_update_description">New description:</label>
+                            <input class="form-control" type="text" id="item_update_description" name="item_update_description"></input>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="item_update_new_parent">Category:</label>
+                            <select name="item_update_new_parent" id="item_update_new_parent" class="form-control">
+                                <option value="">
+                                {% for cat in items_by_cat %}
+                                <option value="{{ cat[0].name }}">{{ cat[0].name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="item_update_pic">Picture (.jpg only):</label>
+                            <input type="file" name="item_update_pic" accept=".jpg"
+                                class="button btn-default form-control" />
+                        </div>
+
+                        <input type="submit" value="Confirm" class="btn btn-primary" />
+                    </form>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+
+
+    <!-- Start of visible page content -->
+    <!-- bootstrap navbar -->
+    <nav id="header" class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="/">$> Catalogifier</a>
+            </div>
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    {% if current_user is none %}
+                    <a href="/login">Log in</a>
+                    {% else %}
+                    <li><a href="/logout">{{ current_user.username }}</a></li>
+                    {% endif %}
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- bootstrap layout container (everything below the navbar) -->
+    <div class="container-fluid">
+        <div class="row">
+
+            <!-- body panel 1: left sidebar -->
+            <!-- Uses sample code from http://www.w3schools.com/bootstrap/bootstrap_collapse.asp -->
+            <div id="accordion" class="col-sm-2 panel-group">
+                {% set cat_index = 0 %}
+                {% for cat in items_by_cat %}
+
+                {% set cat_owner_id = cat[0].creator_id %}
+                {% set cat_name = cat[0].name %}
+                {% set cat_index = cat_index + 1 %}
+                {% set item_list = cat[1] %}
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <div class="panel-title">
+                            <a data-toggle="collapse" data-parent="#accordion" href="#collapse{{ cat_index }}">
+                                <span>{{ cat_name }}</span>
+                            </a>
+                            <span class="pull-right">
+                                <!-- does this user own the category?  add a toolbox -->
+                                {% if current_user is not none %}
+                                    {% if current_user.user_id == cat_owner_id %}
+                                    <span class="dropdown">
+                                        <a class="dropdown-toggle link-unstyled" data-toggle="dropdown">
+                                            <span class="glyphicon glyphicon-cog"></span>
+                                        </a>
+                                        <ul class="dropdown-menu text-primary list-inline">
+                                            <li>
+                                                <a data-toggle="modal" data-target="#cat_update_modal" href="#" onclick="set_current_cat('{{ cat_name }}')">Update</a>
+                                            </li>
+                                            <li>
+                                                <a data-toggle="modal" data-target="#cat_delete_modal" href="#" onclick="set_current_cat('{{ cat_name }}')">Delete</a>
+                                            </li>
+                                        </ul>
+                                    </span>
+                                    {% endif %}
+                                {% endif %}
+                                <!-- show the count of items in this cat as a number badge -->
+                                <span class="badge">{{ item_list|length }}</span>
+                            </span>
+                        </div>
+                    </div>
+                    <div id="collapse{{ cat_index }}" class="panel-collapse collapse{% if active_cat == cat_name %} in{% endif %}">
+                        {% for item in item_list %}
+
+                        {% set item_owner_id = item.creator_id %}
+                        {% set item_name = item.name %}
+                        <div class="list-group-item{% if active_item == item_name %} list-group-item-success{% endif %}">
+                            <a href="/catalog/{{ cat_name }}/{{ item_name }}">{{ item_name }}</a>
+
+                            <!-- does this user own the item?  add a toolbox -->
+                            {% if current_user is not none %}
+                                {% if current_user.user_id == item_owner_id %}
+                                <span class="dropdown">
+                                    <a class="dropdown-toggle link-unstyled" data-toggle="dropdown">
+                                        <span class="glyphicon glyphicon-cog"></span>
+                                    </a>
+                                    <ul class="dropdown-menu text-primary list-inline">
+                                        <li>
+                                            <a data-toggle="modal" data-target="#item_update_modal" href="#" onclick="set_cat_and_item('{{ cat_name }}','{{ item_name }}')">Update</a>
+                                        </li>
+                                        <li>
+                                            <a data-toggle="modal" data-target="#item_delete_modal" href="#" onclick="set_cat_and_item('{{ cat_name }}','{{ item_name }}')">Delete</a>
+                                        </li>
+                                    </ul>
+                                </span>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+
+                        <!-- only authenticated users can create new items -->
+                        {% if current_user is not none %}
+                        <div class="list-group-item">
+                            <a data-toggle="modal" data-target="#item_create_modal" href="#" onclick="set_current_cat('{{ cat_name }}')">(add new item)</a>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+
+                <!-- only authenticated users can create new categories -->
+                {% if current_user is not none %}
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <div class="panel-title">
+                            <a data-toggle="modal" data-target="#cat_create_modal" href="#">(add new category)</a>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- body panel 2: right content pane -->
+            <div id="content" class="col-sm-8">
+                {% block content %}{% endblock %}
+            </div>
+        </div>
+    </div> <!-- /container -->
+</body>
+</html>
