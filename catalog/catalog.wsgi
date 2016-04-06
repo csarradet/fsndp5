@@ -29,7 +29,7 @@ from flask import (
     )
 app = Flask(__name__)
 CLIENT_ID = json.loads(
-    open("client_secrets.json", "r").read())["web"]["client_id"]
+    open("./client_secrets.json", "r").read())["web"]["client_id"]
 from werkzeug import secure_filename
 
 # Project-specific includes
@@ -70,9 +70,8 @@ def download_static_file(filename):
 @app.route('/')
 def dashboard():
     """ Serves the splash page for the application. """
-    # recent_items = dal.get_recent_items(5)
-    # return render("dashboard.html", recent_items=recent_items)
-    return flask.render_template("helloworld.html")
+    recent_items = dal.get_recent_items(5)
+    return render("dashboard.html", recent_items=recent_items)
 
 
 
