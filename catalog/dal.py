@@ -138,6 +138,7 @@ def get_or_create_user(username, auth_source, auth_source_id):
     Assumes that auth_source_id is mandatory, unique, and consistent
     within the domain of a particular auth_source.
     """
+    auth_source_id = str(auth_source_id)
     output = None
     with get_cursor() as cursor:
         cursor.execute('SELECT * FROM users WHERE auth_source = %s AND auth_source_id = %s',
