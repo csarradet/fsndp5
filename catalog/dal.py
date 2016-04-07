@@ -306,17 +306,6 @@ def update_item(item_id, name=None, description=None, pic_id=None, pic=None, cat
 
 
 
-def initial_db_setup():
-    """
-    Executes our database setup script (this will wipe any existing data).
-    Uses a code snippet from http://stackoverflow.com/questions/2380553/sqlite-run-multi-line-sql-script-from-file
-    """
-    print(" - Clearing existing data")
-    print(" - Creating tables and views")
-    qry = open("catalog.sql", "r").read()
-    with get_cursor() as cursor:
-        cursor.executescript(qry)
-    print(" - DB initial setup complete")
 
 def load_dummy_data():
     """
@@ -336,7 +325,5 @@ def load_dummy_data():
 
 
 if __name__ == '__main__':
-    print("Setting up DB")
-    initial_db_setup()
     print("Creating dummy records")
     load_dummy_data()

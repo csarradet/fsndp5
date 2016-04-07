@@ -71,3 +71,5 @@ CREATE VIEW pretty_items_light AS
         JOIN categories AS c ON (i.cat_id = c.cat_id)
     ;
 GRANT SELECT ON pretty_items_light TO catalog;
+
+
