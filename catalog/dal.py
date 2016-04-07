@@ -302,7 +302,8 @@ def update_item(item_id, name=None, description=None, pic_id=None, pic=None, cat
         if cat_id is not None:
             cursor.execute("UPDATE items SET cat_id=%s WHERE item_id=%s", (cat_id, item_id))
 
-        cursor.execute("UPDATE items SET changed=DATETIME('now') WHERE item_id=%s", (item_id,))
+        dtnow = datetime.datetime.now()
+        cursor.execute("UPDATE items SET changed=%s WHERE item_id=%s", (dtnow, item_id))
 
 
 
