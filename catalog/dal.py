@@ -16,6 +16,7 @@ are properly passed to the DB using parameterized queries.
 """
 
 import contextlib
+import datetime
 import psycopg2
 import psycopg2.extras
 
@@ -263,10 +264,11 @@ def create_item(name, category_id, creator_id, pic, description=None):
             (str(pic),))
         pic_id = cursor.fetchone()[0]
 
+        dtnow = datetime.datetime.now()
         # Now create the actual item and return its ID
         cursor.execute("INSERT INTO items(name, description, pic_id, cat_id, creator_id, changed) " + 
-            "VALUES (%s,%s,%s,%s,%s,(DATETIME('now'))) RETURNING item_id",
-            (name, description, pic_id, category_id, creator_id))
+            "VALUES (%s,%s,%s,%s,%s,%s) RETURNING item_id",
+            (name, description, pic_id, category_id, creator_id, dtnow))
         id = cursor.fetchone()[0]
     return id
 
