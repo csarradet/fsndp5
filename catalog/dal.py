@@ -37,7 +37,7 @@ def get_cursor():
         with with_cursor() as cursor:
             cursor.execute("delete from matches;")
     """
-    conn = psycopg2.connect("dbname=catalog user=catalog password=gra#der_123! hostaddr=127.0.0.1")
+    conn = psycopg2.connect("dbname=catalog user=catalog password=foo123bar321 hostaddr=127.0.0.1")
     # This Row wrapper adds the ability to access a row's fields by column name,
     # allowing us to auto-convert them to entities as long as the field names
     # match (see entity_from_row()).
