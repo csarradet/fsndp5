@@ -25,7 +25,8 @@ GRANT USAGE, SELECT ON sequence categories_cat_id_seq TO catalog;
 
 CREATE TABLE pictures (
     pic_id SERIAL PRIMARY KEY,
-    pic BYTEA NOT NULL
+    -- base64-encoded JPEG data
+    pic TEXT NOT NULL
     );
 GRANT SELECT, INSERT, UPDATE, DELETE ON pictures TO catalog;
 GRANT USAGE, SELECT ON sequence pictures_pic_id_seq TO catalog;

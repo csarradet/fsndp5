@@ -259,15 +259,14 @@ def create_item(name, category_id, creator_id, pic, description=None):
         description = "Placeholder item description"
     with get_cursor() as cursor:
         # First, create the picture and get its new ID number
-        cursor.execute("INSERT INTO pictures VALUES (null, %s)",
-            (sqlite3.Binary(pic),))
-        cursor.execute('SELECT last_insert_rowid()')
+        cursor.execute("INSERT INTO pictures(pic) VALUES (%s) RETURNING pic_id",
+            (str(pic),))
         pic_id = cursor.fetchone()[0]
 
         # Now create the actual item and return its ID
-        cursor.execute("INSERT INTO items VALUES (null,%s,%s,%s,%s,%s,(DATETIME('now')))",
+        cursor.execute("INSERT INTO items(name, description, pic_id, cat_id, creator_id, changed) " + 
+            "VALUES (%s,%s,%s,%s,%s,(DATETIME('now'))) RETURNING item_id",
             (name, description, pic_id, category_id, creator_id))
-        cursor.execute('SELECT last_insert_rowid()')
         id = cursor.fetchone()[0]
     return id
 
