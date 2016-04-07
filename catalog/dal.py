@@ -178,9 +178,8 @@ def create_category(name, creator_id):
     """ Creates a new category record and returns its ID number. """
     id = None
     with get_cursor() as cursor:
-        cursor.execute('INSERT INTO categories VALUES (null, %s, %s)', (
+        cursor.execute('INSERT INTO categories(name, creator_id) VALUES (%s, %s) RETURNING cat_id', (
             name, creator_id))
-        cursor.execute('SELECT last_insert_rowid()')
         id = cursor.fetchone()[0]
     return id
 
