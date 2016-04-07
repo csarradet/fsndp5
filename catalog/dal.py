@@ -17,6 +17,7 @@ are properly passed to the DB using parameterized queries.
 
 import contextlib
 import psycopg2
+import psycopg2.extras
 
 import logging
 logger = logging.getLogger(__name__)
