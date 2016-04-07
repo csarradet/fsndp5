@@ -14,8 +14,7 @@
 
 <div>Configurations made:</div>
 <ul>
-    <li>Since I chose to implement my own DAL for the catalog app instead of using Flask, I had to go back and make some updates to facilitate the move from SQLite3 to postgresql.  These changes are visible in the revision history, but here's a quick summary:</li>
-    <li>
+    <li>Since I chose to implement my own DAL for the catalog app instead of using SQLAlchemy, I had to go back and make some updates to facilitate the move from SQLite3 to postgresql.  These changes are visible in the revision history, but here's a quick summary:
         <ul>
             <li>Updated the location of the client_secrets.json file</li>
             <li>Moved app configuration and launch into a new file, catalog.wsgi</li>
