@@ -16,6 +16,7 @@ are properly passed to the DB using parameterized queries.
 """
 
 import contextlib
+import psycopg2
 import sqlite3
 
 import logging
@@ -36,7 +37,7 @@ def get_cursor():
         with with_cursor() as cursor:
             cursor.execute("delete from matches;")
     """
-    conn = sqlite3.connect("data source=catalog.db; foreign keys=true;")
+    conn = psycopg2.connect("dbname=catalog")
     # This Row wrapper adds the ability to access a row's fields by column name,
     # allowing us to auto-convert them to entities as long as the field names
     # match (see entity_from_row()).
