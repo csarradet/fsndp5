@@ -6,7 +6,7 @@ CREATE DATABASE catalog;
 
 
 CREATE TABLE users (
-    user_id INTEGER PRIMARY KEY,
+    user_id SERIAL PRIMARY KEY,
     username TEXT NOT NULL,
     auth_source TEXT NOT NULL,
     auth_source_id TEXT NOT NULL
@@ -14,7 +14,7 @@ CREATE TABLE users (
 GRANT SELECT, INSERT, UPDATE, DELETE ON users TO catalog;
 
 CREATE TABLE categories (
-    cat_id INTEGER PRIMARY KEY,
+    cat_id SERIAL PRIMARY KEY,
     name TEXT NOT NULL,
     creator_id INTEGER NOT NULL,
     FOREIGN KEY(creator_id) REFERENCES users(user_id) ON DELETE CASCADE
@@ -22,13 +22,13 @@ CREATE TABLE categories (
 GRANT SELECT, INSERT, UPDATE, DELETE ON categories TO catalog;
 
 CREATE TABLE pictures (
-    pic_id INTEGER PRIMARY KEY,
+    pic_id SERIAL PRIMARY KEY,
     pic BYTEA NOT NULL
     );
 GRANT SELECT, INSERT, UPDATE, DELETE ON pictures TO catalog;
 
 CREATE TABLE items (
-    item_id INTEGER PRIMARY KEY,
+    item_id SERIAL PRIMARY KEY,
     name TEXT NOT NULL,
     description TEXT NOT NULL,
     pic_id INTEGER NOT NULL,
