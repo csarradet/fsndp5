@@ -38,12 +38,11 @@ def get_cursor():
             cursor.execute("delete from matches;")
     """
     conn = psycopg2.connect(
-            cursor_factory=psycopg2.extras.DictCursor,
             database="catalog",
             user="catalog",
             password="foo123bar321",
             hostaddr="127.0.0.1")
-    c = conn.cursor()
+    c = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     try:
         yield c
     except:
