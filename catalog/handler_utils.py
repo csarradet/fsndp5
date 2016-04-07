@@ -28,7 +28,11 @@ def date_to_atom_friendly(date):
     Uses a third party library released under a free license (see rfc3339.py for details).
     Uses code from http://stackoverflow.com/questions/9637838/convert-string-date-to-timestamp-in-python
     """
-    parsed = time.mktime(datetime.datetime.strptime(date, "%Y-%m-%d %H:%M:%S").timetuple())
+    parsed = None
+    if isinstance(date, datetime.datetime):
+        parsed = date
+    else:
+        parsed = time.mktime(datetime.datetime.strptime(date, "%Y-%m-%d %H:%M:%S").timetuple())
     return rfc3339(parsed)
 
 
