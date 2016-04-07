@@ -36,7 +36,7 @@ def get_cursor():
         with with_cursor() as cursor:
             cursor.execute("delete from matches;")
     """
-    conn = psycopg2.connect("dbname=catalog user=catalog password=foo123bar321 hostaddr=127.0.0.1" +
+    conn = psycopg2.connect("dbname=catalog user=catalog password=foo123bar321 hostaddr=127.0.0.1 " +
         "cursor_factory=psycopg2.extras.DictCursor")
 
     conn.row_factory = sqlite3.Row
