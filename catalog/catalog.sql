@@ -12,6 +12,7 @@ CREATE TABLE users (
     auth_source_id TEXT NOT NULL
     );
 GRANT SELECT, INSERT, UPDATE, DELETE ON users TO catalog;
+GRANT USAGE, SELECT ON sequence users_user_id_seq TO catalog;
 
 CREATE TABLE categories (
     cat_id SERIAL PRIMARY KEY,
@@ -20,12 +21,14 @@ CREATE TABLE categories (
     FOREIGN KEY(creator_id) REFERENCES users(user_id) ON DELETE CASCADE
     );
 GRANT SELECT, INSERT, UPDATE, DELETE ON categories TO catalog;
+GRANT USAGE, SELECT ON sequence categories_cat_id_seq TO catalog;
 
 CREATE TABLE pictures (
     pic_id SERIAL PRIMARY KEY,
     pic BYTEA NOT NULL
     );
 GRANT SELECT, INSERT, UPDATE, DELETE ON pictures TO catalog;
+GRANT USAGE, SELECT ON sequence pictures_pic_id_seq TO catalog;
 
 CREATE TABLE items (
     item_id SERIAL PRIMARY KEY,
@@ -40,6 +43,7 @@ CREATE TABLE items (
     FOREIGN KEY(pic_id) REFERENCES pictures(pic_id) ON DELETE CASCADE
     );
 GRANT SELECT, INSERT, UPDATE, DELETE ON items TO catalog;
+GRANT USAGE, SELECT ON sequence items_item_id_seq TO catalog;
 
 
 
