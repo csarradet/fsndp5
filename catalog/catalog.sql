@@ -21,6 +21,12 @@ CREATE TABLE categories (
     );
 GRANT SELECT, INSERT, UPDATE, DELETE ON categories TO catalog;
 
+CREATE TABLE pictures (
+    pic_id INTEGER PRIMARY KEY,
+    pic BYTEA NOT NULL
+    );
+GRANT SELECT, INSERT, UPDATE, DELETE ON pictures TO catalog;
+
 CREATE TABLE items (
     item_id INTEGER PRIMARY KEY,
     name TEXT NOT NULL,
@@ -35,11 +41,6 @@ CREATE TABLE items (
     );
 GRANT SELECT, INSERT, UPDATE, DELETE ON items TO catalog;
 
-CREATE TABLE pictures (
-    pic_id INTEGER PRIMARY KEY,
-    pic BYTEA NOT NULL
-    );
-GRANT SELECT, INSERT, UPDATE, DELETE ON pictures TO catalog;
 
 
 CREATE VIEW pretty_categories AS
