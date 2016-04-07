@@ -13,7 +13,6 @@ CREATE TABLE users (
     );
 GRANT SELECT, INSERT, UPDATE, DELETE ON users TO catalog;
 
-
 CREATE TABLE categories (
     cat_id INTEGER PRIMARY KEY,
     name TEXT NOT NULL,
@@ -22,7 +21,6 @@ CREATE TABLE categories (
     );
 GRANT SELECT, INSERT, UPDATE, DELETE ON categories TO catalog;
 
-
 CREATE TABLE items (
     item_id INTEGER PRIMARY KEY,
     name TEXT NOT NULL,
@@ -30,20 +28,18 @@ CREATE TABLE items (
     pic_id INTEGER NOT NULL,
     cat_id INTEGER NOT NULL,
     creator_id INTEGER NOT NULL,
-    changed DATETIME NOT NULL,
+    changed TIMESTAMP NOT NULL,
     FOREIGN KEY(cat_id) REFERENCES categories(cat_id) ON DELETE CASCADE,
     FOREIGN KEY(creator_id) REFERENCES users(user_id) ON DELETE CASCADE,
     FOREIGN KEY(pic_id) REFERENCES pictures(pic_id) ON DELETE CASCADE
     );
 GRANT SELECT, INSERT, UPDATE, DELETE ON items TO catalog;
 
-
 CREATE TABLE pictures (
     pic_id INTEGER PRIMARY KEY,
-    pic BLOB NOT NULL
+    pic BYTEA NOT NULL
     );
 GRANT SELECT, INSERT, UPDATE, DELETE ON pictures TO catalog;
-
 
 
 CREATE VIEW pretty_categories AS
@@ -52,7 +48,6 @@ CREATE VIEW pretty_categories AS
     FROM categories AS c JOIN users AS u ON (c.creator_id = u.user_id)
     ;
 GRANT SELECT ON pretty_categories TO catalog;
-
 
 CREATE VIEW pretty_items AS
     SELECT i.item_id, i.name, i.description, i.pic_id, i.cat_id, i.creator_id, i.changed,
@@ -65,7 +60,6 @@ CREATE VIEW pretty_items AS
         JOIN pictures AS p ON (i.pic_id = p.pic_id)
     ;
 GRANT SELECT ON pretty_items TO catalog;
-
 
 CREATE VIEW pretty_items_light AS
     SELECT i.item_id, i.name, i.description, i.pic_id, i.cat_id, i.creator_id, i.changed,
