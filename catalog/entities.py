@@ -9,12 +9,16 @@ being serialized, or sent back and forth from the DAL).
 For more info on how these entities are persisted, see dal.py
 """
 
+import datetime
 import json
 
 def jdefault(o):
     """ JSON encoder used to serialize Entities """
     if isinstance(o, buffer):
         # Special case for encoding binary picture data on items
+        return str(o)
+    if isinstance(o, datetime.datetime):
+        # Special case for item change dates
         return str(o)
     return o.__dict__
 
