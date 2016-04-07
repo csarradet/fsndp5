@@ -97,7 +97,7 @@ def __simple_get(UNSAFE_table_name, UNSAFE_entity_class, UNSAFE_search_field, se
     """
     output = None
     with get_cursor() as cursor:
-        cursor.execute('SELECT * FROM {} WHERE {} = ? LIMIT 1'.format(
+        cursor.execute('SELECT * FROM {} WHERE {} = %s LIMIT 1'.format(
             UNSAFE_table_name, UNSAFE_search_field), (search_text,))
         output = entity_from_row(UNSAFE_entity_class, cursor.fetchone())
     return output
@@ -111,7 +111,7 @@ def __simple_delete(UNSAFE_table_name, UNSAFE_entity_class, UNSAFE_search_field,
     column search_field matches search_text.
     """
     with get_cursor() as cursor:
-        cursor.execute('DELETE FROM {} WHERE {} = ?'.format(
+        cursor.execute('DELETE FROM {} WHERE {} = %s'.format(
             UNSAFE_table_name, UNSAFE_search_field), (search_text,))
 
 
@@ -137,7 +137,7 @@ def get_or_create_user(username, auth_source, auth_source_id):
     """
     output = None
     with get_cursor() as cursor:
-        cursor.execute('SELECT * FROM users WHERE auth_source = ? AND auth_source_id = ?',
+        cursor.execute('SELECT * FROM users WHERE auth_source = %s AND auth_source_id = %s',
             (auth_source, auth_source_id,))
         output = entity_from_row(User, cursor.fetchone())
 
@@ -151,7 +151,7 @@ def create_user(username, auth_source, auth_source_id):
     """ Creates a new database record and returns its ID number. """
     id = None
     with get_cursor() as cursor:
-        cursor.execute('INSERT INTO users VALUES (null, ?, ?, ?)', (
+        cursor.execute('INSERT INTO users VALUES (null, %s, %s, %s)', (
             username, auth_source, auth_source_id,))
         cursor.execute('SELECT last_insert_rowid()')
         id = cursor.fetchone()[0]
@@ -175,7 +175,7 @@ def create_category(name, creator_id):
     """ Creates a new category record and returns its ID number. """
     id = None
     with get_cursor() as cursor:
-        cursor.execute('INSERT INTO categories VALUES (null, ?, ?)', (
+        cursor.execute('INSERT INTO categories VALUES (null, %s, %s)', (
             name, creator_id))
         cursor.execute('SELECT last_insert_rowid()')
         id = cursor.fetchone()[0]
@@ -188,7 +188,7 @@ def delete_category(cat_id):
 def update_category(cat_id, name):
     """ Update the DB record for a particular category. """
     with get_cursor() as cursor:
-        cursor.execute('UPDATE categories SET name=? WHERE cat_id=?', (name, cat_id))
+        cursor.execute('UPDATE categories SET name=%s WHERE cat_id=%s', (name, cat_id))
 
 
 
@@ -209,9 +209,9 @@ def get_items_by_cat(cat_id, lightweight=False):
     output = []
     with get_cursor() as cursor:
         if lightweight:
-            cursor.execute('SELECT * FROM pretty_items_light WHERE cat_id = ?', (cat_id,))
+            cursor.execute('SELECT * FROM pretty_items_light WHERE cat_id = %s', (cat_id,))
         else:
-            cursor.execute('SELECT * FROM pretty_items WHERE cat_id = ?', (cat_id,))
+            cursor.execute('SELECT * FROM pretty_items WHERE cat_id = %s', (cat_id,))
         result = cursor.fetchall()
     for row in result:
         output.append(entity_from_row(Item, row))
@@ -221,7 +221,7 @@ def get_item_by_name(cat_id, item_name):
     """ Get a particular item if it exists, or None if it doesn't. """
     output = None
     with get_cursor() as cursor:
-        cursor.execute('SELECT * FROM pretty_items WHERE cat_id = ? AND name = ?',
+        cursor.execute('SELECT * FROM pretty_items WHERE cat_id = %s AND name = %s',
             (cat_id, item_name,))
         output = entity_from_row(Item, cursor.fetchone())
     return output
@@ -230,7 +230,7 @@ def get_recent_items(count):
     """ Get a list of the <count> most recent items that have been created or changed. """
     output = []
     with get_cursor() as cursor:
-        cursor.execute('SELECT * FROM pretty_items ORDER BY changed DESC LIMIT ?', (count,))
+        cursor.execute('SELECT * FROM pretty_items ORDER BY changed DESC LIMIT %s', (count,))
         result = cursor.fetchall()
     for row in result:
         output.append(entity_from_row(Item, row))
@@ -257,13 +257,13 @@ def create_item(name, category_id, creator_id, pic, description=None):
         description = "Placeholder item description"
     with get_cursor() as cursor:
         # First, create the picture and get its new ID number
-        cursor.execute("INSERT INTO pictures VALUES (null, ?)",
+        cursor.execute("INSERT INTO pictures VALUES (null, %s)",
             (sqlite3.Binary(pic),))
         cursor.execute('SELECT last_insert_rowid()')
         pic_id = cursor.fetchone()[0]
 
         # Now create the actual item and return its ID
-        cursor.execute("INSERT INTO items VALUES (null,?,?,?,?,?,(DATETIME('now')))",
+        cursor.execute("INSERT INTO items VALUES (null,%s,%s,%s,%s,%s,(DATETIME('now')))",
             (name, description, pic_id, category_id, creator_id))
         cursor.execute('SELECT last_insert_rowid()')
         id = cursor.fetchone()[0]
@@ -286,20 +286,20 @@ def update_item(item_id, name=None, description=None, pic_id=None, pic=None, cat
     # uncommon anyway.
     with get_cursor() as cursor:
         if name is not None:
-            cursor.execute("UPDATE items SET name=? WHERE item_id=?", (name, item_id))
+            cursor.execute("UPDATE items SET name=%s WHERE item_id=%s", (name, item_id))
 
         if description is not None:
-            cursor.execute("UPDATE items SET description=? WHERE item_id=?", (description, item_id))
+            cursor.execute("UPDATE items SET description=%s WHERE item_id=%s", (description, item_id))
 
         if pic is not None:
             if pic_id is None:
                 raise ValueError("Received updated picture data, but no pic_id")
-            cursor.execute("UPDATE pictures SET pic=? WHERE pic_id=?", (sqlite3.Binary(pic), pic_id))
+            cursor.execute("UPDATE pictures SET pic=%s WHERE pic_id=%s", (sqlite3.Binary(pic), pic_id))
 
         if cat_id is not None:
-            cursor.execute("UPDATE items SET cat_id=? WHERE item_id=?", (cat_id, item_id))
+            cursor.execute("UPDATE items SET cat_id=%s WHERE item_id=%s", (cat_id, item_id))
 
-        cursor.execute("UPDATE items SET changed=DATETIME('now') WHERE item_id=?", (item_id,))
+        cursor.execute("UPDATE items SET changed=DATETIME('now') WHERE item_id=%s", (item_id,))
 
 
 
