@@ -1,8 +1,8 @@
 -- Assumes the user 'catalog' has already been created
 
-DROP DATABASE IF EXISTS tournament;
-CREATE DATABASE tournament;
-\c tournament;
+DROP DATABASE IF EXISTS catalog;
+CREATE DATABASE catalog;
+\c catalog;
 
 
 CREATE TABLE users (
