@@ -155,9 +155,8 @@ def create_user(username, auth_source, auth_source_id):
     """ Creates a new database record and returns its ID number. """
     id = None
     with get_cursor() as cursor:
-        cursor.execute('INSERT INTO users VALUES (null, %s, %s, %s)', (
+        cursor.execute('INSERT INTO users VALUES (%s, %s, %s) RETURNING id', (
             username, auth_source, auth_source_id,))
-        cursor.execute('SELECT last_insert_rowid()')
         id = cursor.fetchone()[0]
     return id
 
