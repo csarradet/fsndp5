@@ -28,8 +28,9 @@ from flask import (
     session,
     )
 app = Flask(__name__)
+PATH_TO_CLIENT_SECRETS = "/var/www/html/fsndp5/catalog/client_secrets.json"
 CLIENT_ID = json.loads(
-    open("/var/www/html/fsndp5/catalog/client_secrets.json", "r").read())["web"]["client_id"]
+    open(PATH_TO_CLIENT_SECRETS, "r").read())["web"]["client_id"]
     #open("client_secrets.json", "r").read())["web"]["client_id"]
 from werkzeug import secure_filename
 
@@ -377,7 +378,7 @@ def gconnect():
     try:
         # Upgrade the authorization code into a credentials object
         scope = "email profile"
-        oauth_flow = flow_from_clientsecrets("client_secrets.json", scope=scope)
+        oauth_flow = flow_from_clientsecrets(PATH_TO_CLIENT_SECRETS, scope=scope)
         oauth_flow.redirect_uri = "postmessage"
         credentials = oauth_flow.step2_exchange(code)
     except FlowExchangeError:
