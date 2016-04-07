@@ -39,8 +39,6 @@ def get_cursor():
     """
     conn = psycopg2.connect("dbname=catalog user=catalog password=foo123bar321 hostaddr=127.0.0.1",
         cursor_factory=psycopg2.extras.DictCursor)
-
-    conn.row_factory = sqlite3.Row
     c = conn.cursor()
     try:
         yield c
@@ -113,7 +111,6 @@ def __simple_delete(UNSAFE_table_name, UNSAFE_entity_class, UNSAFE_search_field,
     column search_field matches search_text.
     """
     with get_cursor() as cursor:
-        cursor.execute('PRAGMA foreign_keys = ON')
         cursor.execute('DELETE FROM {} WHERE {} = ?'.format(
             UNSAFE_table_name, UNSAFE_search_field), (search_text,))
 
